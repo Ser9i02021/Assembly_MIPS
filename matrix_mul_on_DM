@@ -1,0 +1,159 @@
+.data
+	a00: .word 1
+	a01: .word 2
+	a02: .word 3
+	a10: .word 0
+	a11: .word 1
+	a12: .word 4
+	a20: .word 0
+	a21: .word 0
+	a22: .word 1
+	
+	b00: .word 1
+	b01: .word -2
+	b02: .word 5
+	b10: .word 0
+	b11: .word 1
+	b12: .word -4
+	b20: .word 0
+	b21: .word 0
+	b22: .word 1
+	
+	c00: .word 0
+	c01: .word 0
+	c02: .word 0
+	c10: .word 0
+	c11: .word 0
+	c12: .word 0
+	c20: .word 0
+	c21: .word 0
+	c22: .word 0
+	
+.text
+	lw $t0, a00	# Carregam-se da memória de dados para os registradores os valores dos elementos da matriz A
+	lw $t1, a01
+	lw $t2, a02
+	lw $t3, a10
+	lw $t4, a11
+	lw $t5, a12
+	lw $t6, a20
+	lw $t7, a21
+	lw $t8, a22
+	
+	lw $t9, b00	# Carregam-se da memória de dados para os registradores os valores dos elementos da matriz B
+	lw $s0, b01
+	lw $s1, b02
+	lw $s2, b10
+	lw $s3, b11
+	lw $s4, b12
+	lw $s5, b20
+	lw $s6, b21
+	lw $s7, b22
+	
+	
+	mul $t0, $t0, $t9	# Operacões com os elementos da linha 0 e coluna 0
+	mul $t1, $t1, $s2
+	mul $t2, $t2, $s5
+	
+	jal Linha_0_coluna_n
+	sw $t2, c00	# Escreve-se o elemento "c00" da matriz resultante na memória de dados
+	lw $t2, a02
+	
+	
+	mul $t0, $t0, $s0	# Operacões com os elementos da linha 0 e coluna 1
+	mul $t1, $t1, $s3
+	mul $t2, $t2, $s6
+	
+	jal Linha_0_coluna_n
+	sw $t2, c01	# Escreve-se o elemento "c01" da matriz resultante na memória de dados
+	lw $t2, a02
+	
+	mul $t0, $t0, $s1	# Operacões com os elementos da linha 0 e coluna 2
+	mul $t1, $t1, $s4
+	mul $t2, $t2, $s7
+	
+	jal Linha_0_coluna_n
+	sw $t2, c02	# Escreve-se o elemento "c02" da matriz resultante na memória de dados
+	lw $t2, a02
+	
+	mul $t3, $t3, $t9	# Operacões com os elementos da linha 1 e coluna 0
+	mul $t4, $t4, $s2
+	mul $t5, $t5, $s5
+	
+	jal Linha_1_coluna_n
+	sw $t5, c10	# Escreve-se o elemento "c10" da matriz resultante na memória de dados
+	lw $t5, a12
+	
+	mul $t3, $t3, $s0	# Operacões com os elementos da linha 1 e coluna 1
+	mul $t4, $t4, $s3
+	mul $t5, $t5, $s6
+	
+	jal Linha_1_coluna_n
+	sw $t5, c11	# Escreve-se o elemento "c11" da matriz resultante na memória de dados
+	lw $t5, a12
+	
+	mul $t3, $t3, $s1	# Operacões com os elementos da linha 1 e coluna 2
+	mul $t4, $t4, $s4
+	mul $t5, $t5, $s7
+	
+	jal Linha_1_coluna_n
+	sw $t5, c12	# Escreve-se o elemento "c12" da matriz resultante na memória de dados
+	lw $t5, a12
+	
+	mul $t6, $t6, $t9	# Operacões com os elementos da linha 2 e coluna 0
+	mul $t7, $t7, $s2
+	mul $t8, $t8, $s5
+	
+	jal Linha_2_coluna_n
+	sw $t8, c20	# Escreve-se o elemento "c20" da matriz resultante na memória de dados
+	lw $t8, a22
+	
+	mul $t6, $t6, $s0	# Operacões com os elementos da linha 2 e coluna 1
+	mul $t7, $t7, $s3
+	mul $t8, $t8, $s6
+	
+	jal Linha_2_coluna_n
+	sw $t8, c21	# Escreve-se o elemento "c21" da matriz resultante na memória de dados
+	lw $t8, a22
+	
+	mul $t6, $t6, $s1	# Operacões com os elementos da linha 2 e coluna 2
+	mul $t7, $t7, $s4
+	mul $t8, $t8, $s7
+	
+	jal Linha_2_coluna_n
+	sw $t8, c22	# Escreve-se o elemento "c22" da matriz resultante na memória de dados
+	lw $t8, a22
+	
+	j Fim	# Salta-se para o endereco na memória de programa contendo uma instrucão "nop", determinando o fim do programa
+	
+	
+	Linha_0_coluna_n: add $t0, $t0, $t1
+	add $t2, $t2, $t0
+	
+	lw $t0, a00	
+	lw $t1, a01
+	jr $ra
+	
+	Linha_1_coluna_n: add $t3, $t3, $t4
+	add $t5, $t5, $t3
+	
+	lw $t3, a10	
+	lw $t4, a11
+	jr $ra
+	
+	Linha_2_coluna_n: add $t6, $t6, $t7
+	add $t8, $t8, $t6
+	
+	lw $t6, a20	
+	lw $t7, a21
+	jr $ra
+	
+	
+	Fim: nop	# Nenhuma operacão
+	
+	
+
+				
+	
+	
+		
