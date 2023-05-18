@@ -1,0 +1,25 @@
+.data
+	SIXTEEN: .word 16
+	DATA: .word 0
+.text
+main:
+	lw $t2, SIXTEEN
+	li $t0, 0 		# col
+	la $t4, DATA
+	addi $t4, $t4, -4
+	lw $t3, DATA		# Carrega-se o valor "value" inicial da memória de dados e o coloca em $t3
+	addi $t3, $t3, -1
+
+for_col:
+	beq $t0, $t2, out_for_col
+	addi $t0, $t0, 1
+	li $t1, 0 		# row
+for_row:
+	beq $t1, $t2, for_row
+	addi $t1, $t1, 1
+	addi $t3, $t3, 1	# Obtenção do "value"
+
+	mul $t4, $t2, $t1 	# Obtenção do endereço que armazenará o "value" atual
+	sw $t3, 0($t4)		# Armazenamento do "value" em na memória de dados
+	j for_row
+	
