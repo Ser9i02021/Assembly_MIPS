@@ -3,25 +3,26 @@
 	DATA: .word 0
 .text
 main:
-	lw $t2, SIXTEEN
-	li $t0, 0 		# row
-	la $t4, DATA
+	lw $t2, SIXTEEN			# Carrega-se o valor contido no label “SIXTEEN” da memória de dados e o coloca em $t2
+	li $t0, 0 			# row em $t0
+	la $t4, DATA			# Carrega-se o endereço do label “DATA” e o coloca em $t4
 	addi $t4, $t4, -4
-	lw $t3, DATA		# Carrega-se o valor "value" inicial da memória de dados e o coloca em $t3
+	lw $t3, DATA			# Carrega-se o valor "value" inicial da memória de dados e o coloca em $t3
 	addi $t3, $t3, -1
 
 for_row:
-	beq $t0, $t2, out_for_row
-	addi $t0, $t0, 1
-	li $t1, 0 		# col
-for_col:
-	beq $t1, $t2, for_row
-	addi $t1, $t1, 1
-	addi $t3, $t3, 1	# Obtenção do "value"
+	beq $t0, $t2, out_for_row	# Se row = 16, fim do laço “for_row”
+	addi $t0, $t0, 1		# row++
+	li $t1, 0 			# col em $t1
 
-	addi $t4, $t4, 4 	# Obtenção do endereço que armazenará o "value" atual
-	sw $t3, 0($t4)		# Armazenamento do "value" em na memória de dados
+for_col:
+	beq $t1, $t2, for_row		# Se col = 16, fim do laço “for_col”
+	addi $t1, $t1, 1		# col++
+	addi $t3, $t3, 1		# Obtenção do "value"
+
+	addi $t4, $t4, 4 		# Obtenção do endereço que armazenará o "value" atual
+	sw $t3, 0($t4)			# Armazenamento do "value" na memória de dados
 	j for_col
 	
 out_for_row:
-	nop
+	nop				# Fim do programa
