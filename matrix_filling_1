@@ -3,37 +3,40 @@
 	DATA: .word 0
 .text
 main:
-	lw $t2, SIXTEEN
-	li $t0, 0 		# col
-	la $t4, DATA
+	lw $t2, SIXTEEN			# Carrega-se o valor contido no label “SIXTEEN” da memória de dados e o coloca em $t2
+	li $t0, 0 			# col em $t0
+	la $t4, DATA			# Carrega-se o endereço do label “DATA” e o coloca em $t4
 	addi $t4, $t4, -60
 	addi $t4, $t4, -4
-	lw $t3, DATA		# Carrega-se o valor "value" inicial da memória de dados e o coloca em $t3
+	lw $t3, DATA			# Carrega-se o valor "value" inicial da memória de dados e o coloca em $t3
 	addi $t3, $t3, -1
 
 for_col:
-	beq $t0, $t2, out_for_col
+	beq $t0, $t2, out_for_col	# Se col = 16, fim do laço “for_col”
 	addi $t0, $t0, 1
-	li $t1, 0 		# row
-for_row:
-	beq $t1, $t2, for_col
-	addi $t1, $t1, 1
-	addi $t3, $t3, 1	# Obtenção do "value"
+	li $t1, 0 			# row em $t1
 
-	mul $t5, $t2, $t1 	# Obtenção do endereço que armazenará o "value" atual
+for_row:
+	beq $t1, $t2, for_col		# Se row = 16, fim do laço “for_row”
+	addi $t1, $t1, 1		# row++
+	addi $t3, $t3, 1		# Obtenção do "value"
+
+	# Obtenção do endereço que armazenará o "value" atual
 	
-	sll $t5, $t5, 2	 
+	mul $t5, $t2, $t1		# (16 * row) em $t5
 	
-	add $t5, $t5, $t4
+	sll $t5, $t5, 2	 		# ((16 * row) * 4) em $t5
 	
-	addi $t6, $t0, -1
+	add $t5, $t5, $t4		# ((endereço do label “DATA”) + $t5) em $t5
 	
-	sll $t6, $t6, 2
+	addi $t6, $t0, -1		# (col - 1) em $t6
 	
-	add $t5, $t5, $t6
+	sll $t6, $t6, 2			# ((col - 1) * 4) em $t6
 	
-	sw $t3, 0($t5)		# Armazenamento do "value" na memória de dados
+	add $t5, $t5, $t6		# (((col - 1) * 4) + ((16 * row) * 4)) em $t5
+	
+	sw $t3, 0($t5)		# Armazenamento do "value" no endereço recém calculado na memória de dados 
 	j for_row
 
 out_for_col:
-	nop
+	nop				# Fim do programa
