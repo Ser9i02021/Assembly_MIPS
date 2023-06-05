@@ -1,0 +1,44 @@
+# Sergio Bonini (20100546)
+
+.data
+	SIXTEEN: .word 16
+	DATA: .word 0
+.text
+main:
+	lw $t2, SIXTEEN		# Carrega-se o valor contido no label \'93SIXTEEN\'94 da mem\'f3ria de dados e o coloca em $t2\
+	li $t0, 0 			# col em $t0\
+	la $t4, DATA			# Carrega-se o endere\'e7o do label \'93DATA\'94 e o coloca em $t4\
+	addi $t4, $t4, -60
+	addi $t4, $t4, -4
+	lw $t3, DATA			# Carrega-se o valor "value" inicial da mem\'f3ria de dados e o coloca em $t3\
+	addi $t3, $t3, -1
+
+for_col:
+	beq $t0, $t2, out_for_col	# Se col = 16, fim do la\'e7o \'93for_col\'94\
+	addi $t0, $t0, 1
+	li $t1, 0 			# row em $t1\
+
+for_row:
+	beq $t1, $t2, for_col		# Se row = 16, fim do la\'e7o \'93for_row\'94\
+	addi $t1, $t1, 1		# row++\
+	addi $t3, $t3, 1		# Obten\'e7\'e3o do "value"\
+
+	# Obten\'e7\'e3o do endere\'e7o que armazenar\'e1 o "value" atual\
+	
+	mul $t5, $t2, $t1		# (16 * row) em $t5\
+	
+	sll $t5, $t5, 2	 		# ((16 * row) * 4) em $t5\
+	
+	add $t5, $t5, $t4		# ((endere\'e7o do label \'93DATA\'94) + $t5) em $t5\
+	
+	addi $t6, $t0, -1		# (col - 1) em $t6\
+	
+	sll $t6, $t6, 2			# ((col - 1) * 4) em $t6\
+	
+	add $t5, $t5, $t6		# (((col - 1) * 4) + ((16 * row) * 4)) em $t5\
+	
+	sw $t3, 0($t5)		# Armazenamento do "value" no endere\'e7o rec\'e9m calculado na mem\'f3ria de dados \
+	j for_row
+
+out_for_col:
+	nop				# Fim do programa}
