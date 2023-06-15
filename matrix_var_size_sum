@@ -1,0 +1,55 @@
+.data
+	A: .asciiz "A"
+	B: .asciiz "B"
+	two_dots: ": "
+	matrix_C: .word
+	matrix_A: .word
+	
+.text
+main:
+	# Get matrix size
+	li $v0, 5
+	syscall
+	
+	mul $t0, $v0, $v0
+	li $t1, 1
+	la $t2, matrix_A
+	li $t3, 0
+loop_A:
+	sw $t1, 0($t2)
+	addi $t2, $t2, 4
+	addi $t3, $t3, 1
+	bne $t3, $t0, loop_A
+	
+	add $t0, $t0, $t0
+	li $t1, 2
+loop_B:
+	sw $t1, 0($t2)
+	addi $t2, $t2, 4
+	addi $t3, $t3, 1
+	bne $t3, $t0, loop_B
+
+	
+	li $t5, 0
+	la $t2, matrix_A
+	mul $t8, $v0, $v0
+	add $t8, $t2, $t8	# Matrix B address
+	mul $v1, $v0, 4		# Offset para acessar a próxima linha da mesma coluna
+	li $t3, 0
+	li $t9, -1
+for_i:
+	beq $t1, $v0, exit
+	mul $t8, $v0, $v0
+	addi $t9, $t9, 1
+	add $t8, $t8, $t9
+for_j:
+	beq $t5, $v0, for_i
+	lw $t6, 0($t2)
+	lw $t7, 0($t8)
+	add $t6, $t6, $t7
+	sw $t6, 0($t2)
+	addi $t2, $t2, 4
+	add $t8, $t8, $v1
+	addi $t3, $t3, 1
+	beq $t3, $v0, for_i
+	j for_j
