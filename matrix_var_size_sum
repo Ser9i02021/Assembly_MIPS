@@ -1,8 +1,4 @@
 .data
-	A: .asciiz "A"
-	B: .asciiz "B"
-	two_dots: ": "
-	matrix_C: .word
 	matrix_A: .word
 	
 .text
@@ -36,20 +32,31 @@ loop_B:
 	add $t8, $t2, $t8	# Matrix B address
 	mul $v1, $v0, 4		# Offset para acessar a próxima linha da mesma coluna
 	li $t3, 0
-	li $t9, -1
+	li $t9, 0
+	la $s0, matrix_A
+	mul $s1, $v0, 4
 for_i:
-	beq $t1, $v0, exit
+	beq $t9, $s1, exit
 	mul $t8, $v0, $v0
-	addi $t9, $t9, 1
+	mul $t8, $t8, 4
+	add $t8, $t8, $s0
 	add $t8, $t8, $t9
+	addi $t9, $t9, 4
+	li $t3, 0
 for_j:
 	beq $t5, $v0, for_i
+	
 	lw $t6, 0($t2)
 	lw $t7, 0($t8)
+	
 	add $t6, $t6, $t7
-	sw $t6, 0($t2)
+	sw $t6, 0($t2)		# Armazena-se o resultado C[i][j] no endereço de A[i][j]
 	addi $t2, $t2, 4
 	add $t8, $t8, $v1
 	addi $t3, $t3, 1
 	beq $t3, $v0, for_i
 	j for_j
+
+exit:
+	nop
+	
