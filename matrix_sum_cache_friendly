@@ -1,0 +1,92 @@
+.data
+	input_mat_size: .asciiz "Insira a dimensão D das matrizes (DxD cada uma): "
+	.align 2
+	input_block_size: .asciiz "Insira o tamanho do bloco da cache: "
+	.align 2
+	matrix_A: .word
+	
+.text
+main:
+	li $v0, 4
+	la $a0, input_mat_size
+	syscall
+	
+	# Get matrix size
+	li $v0, 5
+	syscall
+	move $t0, $v0
+	
+	#--
+	
+	li $v0, 4
+	la $a0, input_block_size
+	syscall
+	
+	# Get cache block size
+	li $v0, 5
+	syscall
+	
+	#--
+	
+	mul $v1, $t0, $t0
+	li $t1, 1
+	la $t2, matrix_A
+	li $t3, 0
+loop_A:
+	sw $t1, 0($t2)
+	addi $t2, $t2, 4
+	addi $t3, $t3, 1
+	bne $t3, $v1, loop_A
+	
+	add $v1, $v1, $v1
+	li $t1, 2
+loop_B:
+	sw $t1, 0($t2)
+	addi $t2, $t2, 4
+	addi $t3, $t3, 1
+	bne $t3, $v1, loop_B
+
+	
+	la $t2, matrix_A
+	mul $t8, $t0, $t0
+	add $t8, $t2, $t8	# Matrix B address
+	mul $s2, $t0, 4		# Offset para acessar a próxima linha da mesma coluna
+	li $t3, 0
+	li $t9, 0
+	la $s0, matrix_A
+	mul $s1, $t0, 4
+	
+for_i:
+	slt $s3, $t9, $s1
+	beq $s3, $zero, exit
+	mul $t8, $t0, $t0
+	mul $t8, $t8, 4
+	add $t8, $t8, $s0
+	add $t8, $t8, $t9
+	mul $s2, $v0, 4
+	add $t9, $t9, $s2
+	
+	li $t3, 0
+	
+for_j:
+	lw $t6, 0($t2)
+	lw $t7, 0($t8)
+	
+	add $t6, $t6, $t7
+	sw $t6, 0($t2)		# Armazena-se o resultado C[i][j] no endereço de A[i][j]
+	addi $t2, $t2, 4
+	add $t8, $t8, $v1
+	
+	add $t3, $t3, $v0
+	slt $s3, $t3, $t0
+	beq $s3, $zero, for_i
+	j for_j
+	
+for_ii:
+	slt $s3, $t3, $t0
+	beq $s3, $zero, for_i
+	
+	
+
+exit:
+	nop
